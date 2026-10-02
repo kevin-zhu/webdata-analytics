@@ -11,3 +11,4 @@ rootProject.name = 'webdata-analytics'
 
 include 'common'
 include 'netflix-data-analytics'
+include 'realestate'
