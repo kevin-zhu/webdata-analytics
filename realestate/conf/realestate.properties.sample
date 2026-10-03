@@ -1,0 +1,33 @@
+# Copy to realestate.properties and fill in real dataset endpoints (Socrata/SODA JSON resources).
+# Column mappings: <prefix>.field.<modelField>=<column in the dataset>. Unmapped fields use the same name.
+
+# --- Foreclosure data ---------------------------------------------------------------
+foreclosure.sources=example
+foreclosure.example.endpoint=https://data.example.gov/resource/xxxx-xxxx.json
+#foreclosure.example.appToken=
+foreclosure.example.dateColumn=filing_date
+foreclosure.example.stateColumn=state
+foreclosure.example.field.caseNumber=case_no
+foreclosure.example.field.propertyAddress=site_address
+foreclosure.example.field.filingDate=filing_date
+foreclosure.example.field.auctionDate=sale_date
+foreclosure.example.field.lender=beneficiary
+foreclosure.example.field.borrower=trustor
+foreclosure.example.field.amountOwed=unpaid_balance
+
+# --- Real estate agent/broker complaints and citations -----------------------------
+agent.sources=example
+agent.example.endpoint=https://data.example.gov/resource/yyyy-yyyy.json
+agent.example.dateColumn=action_date
+agent.example.field.recordType=action_type
+agent.example.field.agentName=licensee_name
+agent.example.field.licenseNumber=license_no
+agent.example.field.complaintDate=action_date
+agent.example.field.violation=violation
+agent.example.field.disposition=disposition
+agent.example.field.fineAmount=fine
+
+# --- Court orders (CourtListener) --------------------------------------------------
+court.courtlistener.enabled=true
+court.courtlistener.keyword=foreclosure
+#court.courtlistener.token=
