@@ -17,7 +17,7 @@ plugins {
 
 
 dependencies {
-    compile project(":common")
+    implementation project(":common")
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:28.0-jre'
@@ -30,5 +30,5 @@ dependencies {
 
 application {
     // Define the main class for the application
-    mainClassName = 'com.kzhu.netflix.data.analytics.app.NetflixWebDataApp'
+    mainClass = 'com.kzhu.netflix.data.analytics.app.NetflixWebDataApp'
 }
