@@ -24,7 +24,8 @@ public class SocrataForeclosureSource implements ForeclosureDataSource {
   @Override
   public List<ForeclosureRecord> fetch(DataQuery q) throws IOException {
     List<ForeclosureRecord> out = new ArrayList<>();
-    for (Map<String, String> row : client.rows(SocrataQueries.where(map, q), q.keyword, q.limit)) {
+    for (Map<String, String> row : client.rows(SocrataQueries.where(map, q),
+        q.keyword != null ? q.keyword : map.fixedQuery(), q.limit)) {
       ForeclosureRecord r = new ForeclosureRecord();
       r.caseNumber = map.get(row, "caseNumber");
       r.propertyAddress = map.get(row, "propertyAddress");

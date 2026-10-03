@@ -16,6 +16,23 @@ datasets, so those sources are generic: you supply the dataset endpoint and a co
 properties file (`conf/realestate.properties.sample`). No dataset endpoints are hard-coded — the sample
 uses placeholder URLs you must replace with real ones. Court orders come from the CourtListener search API.
 
+## State endpoints
+
+`src/main/resources/states.properties` maps two-letter state codes to endpoints
+(`foreclosure.<ST>.endpoint`, `agent.<ST>.endpoint`, plus optional column mappings). `--state TX` uses only
+`TX`'s entries; without `--state` every configured state is pulled. Your `--config` file is loaded on top and
+overrides the bundled values.
+
+**Coverage is incomplete.** Only endpoints I could find in public sources are listed (currently Delaware
+license discipline); they could not be fetched from the dev sandbox, so verify them with a run. Many states
+publish foreclosure or agent discipline only as web pages/PDFs. To find a state's Socrata datasets:
+
+```
+./gradlew :realestate:run --args="--discover data.texas.gov --keyword foreclosure"
+```
+
+then add the printed endpoint (and any `field.*` mappings) to `states.properties`.
+
 ## Output format
 
 ```json

@@ -24,7 +24,8 @@ public class SocrataAgentComplaintSource implements AgentComplaintDataSource {
   @Override
   public List<AgentComplaintRecord> fetch(DataQuery q) throws IOException {
     List<AgentComplaintRecord> out = new ArrayList<>();
-    for (Map<String, String> row : client.rows(SocrataQueries.where(map, q), q.keyword, q.limit)) {
+    for (Map<String, String> row : client.rows(SocrataQueries.where(map, q),
+        q.keyword != null ? q.keyword : map.fixedQuery(), q.limit)) {
       AgentComplaintRecord r = new AgentComplaintRecord();
       r.recordType = map.get(row, "recordType");
       r.caseNumber = map.get(row, "caseNumber");

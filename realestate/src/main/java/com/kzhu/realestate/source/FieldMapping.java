@@ -27,6 +27,11 @@ public class FieldMapping {
     return props.getProperty(prefix + ".dateColumn");
   }
 
+  /** Optional fixed full-text filter (SoQL $q) for datasets that mix professions/case types. */
+  public String fixedQuery() {
+    return props.getProperty(prefix + ".q");
+  }
+
   public String stateColumn() {
     return props.getProperty(prefix + ".stateColumn");
   }

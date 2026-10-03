@@ -9,25 +9,35 @@ import java.util.Properties;
 /**
  * Builds the configured sources from a properties file. Socrata sources are listed by id:
  * <pre>
- * foreclosure.sources=ca_nod
- * foreclosure.ca_nod.endpoint=https://data.example.gov/resource/xxxx-yyyy.json
- * foreclosure.ca_nod.field.propertyAddress=site_address
- * agent.sources=...        (same layout, "agent.&lt;id&gt;...")
+ * foreclosure.CA.endpoint=...   (keyed by two-letter state code; --state CA selects it)
+ * agent.CA.endpoint=...         (same layout)
  * court.courtlistener.enabled=true
  * </pre>
  */
 public class SourceRegistry {
   private final Properties props;
   private final HttpFetcher http;
+  private final String state; // two-letter code, or null for "all configured"
 
   public SourceRegistry(Properties props, HttpFetcher http) {
+    this(props, http, null);
+  }
+
+  /** With a state, only that state's sources ({@code foreclosure.<ST>.endpoint}, ...) are used. */
+  public SourceRegistry(Properties props, HttpFetcher http, String state) {
     this.props = props;
     this.http = http;
+    this.state = state == null ? null : state.trim().toUpperCase();
+  }
+
+  /** Sources of {@code type} (foreclosure, agent) that have no endpoint for the requested state. */
+  public boolean hasState(String type) {
+    return state != null && props.getProperty(type + "." + state + ".endpoint") != null;
   }
 
   public List<ForeclosureDataSource> foreclosureSources() {
     List<ForeclosureDataSource> out = new ArrayList<>();
-    for (String id : ids("foreclosure.sources")) {
+    for (String id : ids("foreclosure")) {
       String p = "foreclosure." + id;
       out.add(new SocrataForeclosureSource("foreclosure-" + id, client(p), new FieldMapping(props, p)));
     }
@@ -36,7 +46,7 @@ public class SourceRegistry {
 
   public List<AgentComplaintDataSource> agentComplaintSources() {
     List<AgentComplaintDataSource> out = new ArrayList<>();
-    for (String id : ids("agent.sources")) {
+    for (String id : ids("agent")) {
       String p = "agent." + id;
       out.add(new SocrataAgentComplaintSource("agent-complaints-" + id, client(p), new FieldMapping(props, p)));
     }
@@ -62,11 +72,28 @@ public class SourceRegistry {
     return new SocrataClient(http, endpoint, props.getProperty(prefix + ".appToken"));
   }
 
-  private List<String> ids(String key) {
+  /** State mode: just the state's id. Otherwise the explicit `<type>.sources` list, else every `<type>.<id>.endpoint`. */
+  private List<String> ids(String type) {
     List<String> ids = new ArrayList<>();
-    for (String s : props.getProperty(key, "").split(",")) {
-      if (!s.trim().isEmpty()) {
-        ids.add(s.trim());
+    if (state != null) {
+      if (hasState(type)) {
+        ids.add(state);
+      }
+      return ids;
+    }
+    String explicit = props.getProperty(type + ".sources");
+    if (explicit != null) {
+      for (String s : explicit.split(",")) {
+        if (!s.trim().isEmpty()) {
+          ids.add(s.trim());
+        }
+      }
+      return ids;
+    }
+    String pre = type + ".", post = ".endpoint";
+    for (String key : new java.util.TreeSet<>(props.stringPropertyNames())) {
+      if (key.startsWith(pre) && key.endsWith(post) && key.length() > pre.length() + post.length()) {
+        ids.add(key.substring(pre.length(), key.length() - post.length()));
       }
     }
     return ids;
