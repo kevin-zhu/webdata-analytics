@@ -5,3 +5,8 @@
 build
 
 .idea/
+
+# realestate local config (may hold API tokens) and pulled data
+realestate/conf/realestate.properties
+realestate-data/
+out/

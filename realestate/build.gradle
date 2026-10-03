@@ -13,3 +13,8 @@ dependencies {
 application {
     mainClass = 'com.kzhu.realestate.app.RealEstateDataApp'
 }
+
+// Resolve relative --config/--out paths from the repository root, not from realestate/.
+tasks.named('run') {
+    workingDir = rootProject.projectDir
+}

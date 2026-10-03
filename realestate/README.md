@@ -26,7 +26,10 @@ Each record carries the normalized fields plus a `raw` map with the untouched so
 
 ## Run
 
+First copy the sample config and edit it (relative paths are resolved from the repository root):
+
 ```
+cp realestate/conf/realestate.properties.sample realestate/conf/realestate.properties
 ./gradlew :realestate:run --args="--config realestate/conf/realestate.properties --out out --state CA --since 2026-01-01 --limit 500"
 ```
 

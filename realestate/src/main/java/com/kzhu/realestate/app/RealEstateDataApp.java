@@ -57,6 +57,11 @@ public class RealEstateDataApp {
 
     Properties props = new Properties();
     if (config != null) {
+      if (!Files.isRegularFile(config)) {
+        System.err.println("Config file not found: " + config.toAbsolutePath()
+            + "\nCopy realestate/conf/realestate.properties.sample to realestate.properties and edit it.");
+        System.exit(2);
+      }
       try (Reader r = Files.newBufferedReader(config)) {
         props.load(r);
       }
